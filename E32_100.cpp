@@ -34,13 +34,13 @@ bool E32_100::init()
   if (!getVersion())
       return false;
   
-  setMode(RHModeRx);
+  setMode(RLModeRx);
   clearRxBuf();
 
-  if (!setDataRate(DataRate5kbps))
+  if (!setDataRate(DataRate_9_6kbps))
     return false;
 
-  if (!setPower(Power21dBm))
+  if (!setPower(Power14dBm))
     return false;
 
   //  if (!setBaudRate(BaudRate9600, Parity8N1))
@@ -281,10 +281,10 @@ bool E32_100::recv(uint8_t* buf, uint8_t* len){
   
   if (buf && len){
     // Skip the 4 headers that are at the beginning of the rxBuf
-    if (*len > _bufLen - RH_E32_HEADER_LEN)
-        *len = _bufLen - RH_E32_HEADER_LEN;
+    if (*len > _bufLen - E32_HEADER_LEN)
+        *len = _bufLen - E32_HEADER_LEN;
 
-    memcpy(buf, _buf + RH_E32_HEADER_LEN, *len);
+    memcpy(buf, _buf + E32_HEADER_LEN, *len);
   }
   clearRxBuf(); // This message accepted and cleared
   return true;
@@ -310,7 +310,7 @@ bool E32_100::available(){
 	    return false;
 	  } else if (_bufLen < _buf[0]){
 	    return false;
-	  } else if (   _bufLen > _buf[0] || _bufLen > RH_E32_MAX_PAYLOAD_LEN){
+	  } else if (   _bufLen > _buf[0] || _bufLen > E32_MAX_PAYLOAD_LEN){
 	    clearRxBuf();
 	    _rxBad++;
 	    return false;
@@ -326,7 +326,7 @@ bool E32_100::available(){
 
 // Check whether the latest received message is complete and uncorrupted
 void E32_100::validateRxBuf(){
-  if (_bufLen < RH_E32_HEADER_LEN)
+  if (_bufLen < E32_HEADER_LEN)
 	  return; // Too short to be a real message
   
   if (_bufLen != _buf[0])

@@ -98,6 +98,14 @@ class E32_100 : public DriverLora {
 
         typedef enum
         {
+            ModeNormal = 0,
+            ModeWakeUp,
+            ModePowerSaving,
+            ModeSleep
+        } OperatingMode;
+        
+        typedef enum
+        {
             DataRate_0_3kbps  = E32_PARAM_SPED_DATARATE_0_3KBPS,
             DataRate_1_2kbps  = E32_PARAM_SPED_DATARATE_1_2KBPS,
             DataRate_2_4kbps  = E32_PARAM_SPED_DATARATE_2_4KBPS,
@@ -147,7 +155,7 @@ class E32_100 : public DriverLora {
             fec_off = E32_PARAM_OPTION_FEC_OFF,
         } FEC;
 
-        E32_100(Stream *s=&Serial, uint8_t m0_pin = 4, uint8_t m1_pin = 5, uint8_t aux_pin = 8);
+        E32_100(Stream *s = &Serial, uint8_t m0_pin = 4, uint8_t m1_pin = 5, uint8_t aux_pin = 8);
 
         bool init();
 
@@ -157,7 +165,7 @@ class E32_100 : public DriverLora {
 
         bool send(const uint8_t* data, uint8_t len);
 
-        uint8_T maxMessageLength();
+        uint8_t maxMessageLength();
 
         bool waitPacketSent();
 
@@ -175,14 +183,9 @@ class E32_100 : public DriverLora {
 
         bool setFEC(FEC fec);
 
+        void setOperatingMode(OperatingMode mode);
+
     protected:
-        typedef enum
-        {
-            ModeNormal = 0,
-            ModeWakeUp,
-            ModePowerSaving,
-            ModeSleep
-        } OperatingMode;
         
         typedef struct
         {
@@ -193,8 +196,6 @@ class E32_100 : public DriverLora {
             uint8_t chan;
             uint8_t option;
         } Parameters;
-
-        void setOperatingMode(OperatingMode mode);
 
         bool getVersion();
 
